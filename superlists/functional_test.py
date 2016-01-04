@@ -1,7 +1,7 @@
 from selenium import webdriver
 import unittest
 #difference between unit test and functional test?
-#1. unit test is focused and precised and short while acceptance test is long 
+#1. unit test is focused and precised and short while acceptance test is long
 class NewVisitorTest(unittest.TestCase):
     #before and after every single test for the two def
     def setUp(self):
@@ -54,6 +54,6 @@ class NewVisitorTest(unittest.TestCase):
         #She visits that URL - her to-do list is still there
 
         #satisfied, she goes back to sleep
-
+        self.fail('Finish the app!')
 if __name__ == '__main__':
     unittest.main()
