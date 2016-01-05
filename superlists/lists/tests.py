@@ -1,8 +1,7 @@
 from django.core.urlresolvers import resolve
+from django.template.loader import render_to_string
 from django.test import TestCase
 from django.http import HttpRequest
-
-# Create your tests here.
 from lists.views import home_page
 
 class HomePageTest(TestCase):
@@ -14,10 +13,8 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         #what do we get after we get the request
         response = home_page(request)
-
-        self.assertTrue(response.content.startswith('<html>'))
-        self.assertIn('<title>To-Do lists</title>', response.content)
-        self.assertTrue(response.content.endswith('</html>'))
+        expected_html = render_to_string('home.html')
+        self.assertEqual(response.content.decode(),expected_html)
 
 # Model view controller
 # Three conceptual segments
