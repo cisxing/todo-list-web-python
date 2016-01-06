@@ -59,11 +59,14 @@ class NewVisitorTest(LiveServerTestCase):
         #When she hits enter, the page updates, and now the page lists
         #1. Buy peacock feathers as the item in a to-do lists
         self.send_key_and_enter("Buy peacock feathers")
+        #when she hits enter, she is tsaken to a new url
+        #and now the page lists "1.Buy peaock feathers"
 
         #useful debugging test for functional test
         #import time
         #time.sleep(15)
-
+        edith_list_url = self.browser.current_url
+        self.assertRegexpMatches(edith_list_url,'/lists/.+')
         self.check_for_row_in_list_table("1. Buy peacock feathers")
         #self.assertTrue(
         #    any(row.text=='1. Buy peacock feathers' for row in rows),
@@ -86,5 +89,23 @@ class NewVisitorTest(LiveServerTestCase):
 
         #She visits that URL - her to-do list is still there
 
-        #satisfied, she goes back to sleep
+
+        #now a new user, Francis comes along
+        ## We use a new broswer session to make sure no information of Edith's
+        ##comes a long( EG cookies, localstorage)
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('make a fly', page_text)
+        print "everything is working up till this point"
+        self.send_key_and_enter('Buy Milk')
+        fracis_list_url = self.browser.current_url
+        self.assertRegexpMatches(fracis_list_url, 'lists/.+')
+        self.assertNotEqual(fracis_list_url, edith_list_url)
+        page_text = self.browser.find_element_by_id('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertIn('Buy Milk', page_text)
+        #Both satisfied, they both go back to sleep
         self.fail('Finish the app!')
