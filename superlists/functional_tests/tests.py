@@ -1,9 +1,10 @@
 from selenium import webdriver
+from django.test import LiveServerTestCase
 from selenium.webdriver.common.keys import Keys
 import unittest
 #difference between unit test and functional test?
 #1. unit test is focused and precised and short while acceptance test is long
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     #before and after every single test for the two def
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -34,7 +35,9 @@ class NewVisitorTest(unittest.TestCase):
         # She goes to check out its homepage
         #start a portal 8000
         #go to the homepage
-        self.browser.get('http://localhost:8000')
+
+        #this does not need us to run the server anymore
+        self.browser.get(self.live_server_url)
         # She notices the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
         #browser info given by selenium
@@ -85,5 +88,3 @@ class NewVisitorTest(unittest.TestCase):
 
         #satisfied, she goes back to sleep
         self.fail('Finish the app!')
-if __name__ == '__main__':
-    unittest.main()
