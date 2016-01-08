@@ -37,7 +37,10 @@ class NewVisitorTest(LiveServerTestCase):
         #go to the homepage
 
         #this does not need us to run the server anymore
+        print self.live_server_url
         self.browser.get(self.live_server_url)
+        import time
+        time.sleep(5)
         # She notices the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
         #browser info given by selenium
@@ -61,7 +64,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.send_key_and_enter("Buy peacock feathers")
         #when she hits enter, she is tsaken to a new url
         #and now the page lists "1.Buy peaock feathers"
-
+        time.sleep(5)
         #useful debugging test for functional test
         #import time
         #time.sleep(15)
@@ -104,8 +107,7 @@ class NewVisitorTest(LiveServerTestCase):
         fracis_list_url = self.browser.current_url
         self.assertRegexpMatches(fracis_list_url, 'lists/.+')
         self.assertNotEqual(fracis_list_url, edith_list_url)
-        page_text = self.browser.find_element_by_id('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy Milk', page_text)
         #Both satisfied, they both go back to sleep
-        self.fail('Finish the app!')
