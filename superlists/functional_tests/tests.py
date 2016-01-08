@@ -39,8 +39,7 @@ class NewVisitorTest(LiveServerTestCase):
         #this does not need us to run the server anymore
         print self.live_server_url
         self.browser.get(self.live_server_url)
-        import time
-        time.sleep(5)
+
         # She notices the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
         #browser info given by selenium
@@ -64,7 +63,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.send_key_and_enter("Buy peacock feathers")
         #when she hits enter, she is tsaken to a new url
         #and now the page lists "1.Buy peaock feathers"
-        time.sleep(5)
         #useful debugging test for functional test
         #import time
         #time.sleep(15)
