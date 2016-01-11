@@ -59,7 +59,6 @@ class newItemText(TestCase):
         correct_list = List.objects.create()
         response = self.client.post('/lists/%d/add_item' %(correct_list.id,),
         data= {'item_text': 'A new item for an existing list'})
-        print response
         self.assertRedirects(response, '/lists/%d/' %(correct_list.id, ))
 
 class ItemAndListModelsTest(TestCase):
@@ -114,6 +113,50 @@ class ListViewTest(TestCase):
         correct_list = List.objects.create()
         response = self.client.get('/lists/%d/' %(correct_list.id, ))
         self.assertEqual(response.context['list'], correct_list)
+
+class deleteItemTest(TestCase):
+    def delete_one_item_after_added(self):
+        new_list = List()
+        new_list.save()
+
+        first_item = Item()
+        first_item.text = 'The first (ever) list item'
+        first_item.list = new_list
+        first_item.save()
+
+        second_item = Item()
+        second_item.text = 'Item the second'
+        second_item.list = new_list
+        second_item.save()
+
+        saved_list = List.objects.first()
+        self.assertEqual(new_list, saved_list)
+
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+        first_saved_item = saved_items[0]
+        second_saved_item = saved_items[1]
+        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+        self.assertEqual(second_saved_item.text, 'Item the second')
+        saved_items[0].delete()
+        self.assertEqual(saved_items.count(), 1)
+        new_first_item = saved_items[0]
+        self.assertEqual(new_first_item.text, 'Item the second')
+    def test_delete_to_list_view(self):
+
+        new_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list = new_list)
+        Item.objects.create(text='itemey 2', list = new_list)
+        saved_items = Item.objects.all()
+        first_item = saved_items[0]
+        second_item = saved_items[1]
+        response = self.client.get('/lists/items/%d/delete' %(first_item.id, ))
+        self.assertRedirects(response, '/lists/%d/' %(new_list.id, ))
+        self.assertEqual(saved_items.count(), 1)
+        #self.assertNotContains(response, 'itemey 1')
+        response = self.client.get('/lists/%d/' %(new_list.id, ))
+        self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'itemey 1')
 # Model view controller
 # Three conceptual segments
 # Model: All the data for the application, for now strings, for later, maybe database

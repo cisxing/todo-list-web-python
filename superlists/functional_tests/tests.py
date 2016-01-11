@@ -37,7 +37,6 @@ class NewVisitorTest(LiveServerTestCase):
         #go to the homepage
 
         #this does not need us to run the server anymore
-        print self.live_server_url
         self.browser.get(self.live_server_url)
 
         # She notices the page title and header mention to-do lists.
@@ -100,7 +99,6 @@ class NewVisitorTest(LiveServerTestCase):
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
-        print "everything is working up till this point"
         self.send_key_and_enter('Buy Milk')
         fracis_list_url = self.browser.current_url
         self.assertRegexpMatches(fracis_list_url, 'lists/.+')
@@ -109,3 +107,16 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy Milk', page_text)
         #Both satisfied, they both go back to sleep
+    def test_can_delete_items_after_added(self):
+        self.browser.get(self.live_server_url)
+        self.assertIn('To-Do', self.browser.title)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.send_key_and_enter("Buy peacock feathers")
+        edith_list_url = self.browser.current_url
+        self.assertRegexpMatches(edith_list_url,'/lists/.+')
+        self.check_for_row_in_list_table("1. Buy peacock feathers")
+
+        element = self.browser.find_element_by_tag_name('a')
+        element.click()
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn("Buy peacock feathers", page_text)
