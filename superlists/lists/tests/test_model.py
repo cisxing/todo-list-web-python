@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.test import TestCase
 from lists.models import Item, List
-
+from django.core.exceptions import ValidationError
 
 class ItemAndListModelsTest(TestCase):
 
@@ -32,7 +32,18 @@ class ItemAndListModelsTest(TestCase):
         self.assertEqual(second_saved_item.text, 'Item the second')
         self.assertEqual(first_saved_item.list, new_list)
         self.assertEqual(second_saved_item.list, new_list)
+    def test_cannot_save_empty_list_items(self):
+        new_list = List.objects.create()
+        item = Item(list = new_list, text = '')
+        # try:
+        #     item.save()
+        #     self.fail('The save should have raised an exception')
+        # except ValidationError:
+        #     pass
 
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
 # Model view controller
 # Three conceptual segments
 # Model: All the data for the application, for now strings, for later, maybe database
