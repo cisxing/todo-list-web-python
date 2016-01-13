@@ -10,3 +10,4 @@ class Item(models.Model):
     text = models.TextField(default = '')
     #looking for the wrong key word
     list = models.ForeignKey(List, default=None)
+    is_done = models.BooleanField(default = False)
