@@ -22,7 +22,7 @@ class TodoFunctionalTest(StaticLiveServerTestCase):
             row_text = row.find_elements_by_tag_name('td')[2].text
             if item_text == row_text:
                 return row
-        self.fail("%s not in table - %s" %(item_text, table_text) )
+        self.fail("%s not in table - %s" %(item_text, table.text) )
         return None
     def check_for_row_in_list_table(self, row_text):
 
