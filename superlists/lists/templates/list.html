@@ -12,7 +12,7 @@
           name = "mark_item_done"
           value = "{{item.id}}"
           {%if item.is_done%}checked = "checkeds" {%endif%}/></td>
-        <td {%if item.is_done %} class = "todo-done"{%endif%}>{{ item.text }}
+        <td class = "content {%if item.is_done %} todo-done"{%endif%}>{{ item.text }}
         <!-- <a href="/lists/{{ list.id }}/items/{{ item.id }}/delete_item">Delete</a> -->
       </td></tr>
     {% endfor %}

@@ -23,7 +23,15 @@ class HomePageTest(TestCase):
 
         self.assertEqual(response.content.decode(), expected_html)
 
+    def test_home_page_has_todo_lists(self):
+        list1 = List.objects.create(name = 'List 1')
+        list2 = List.objects.create(name = 'List 2')
+        response = self.client.get('/')
 
+        context = response.context['todo_lists']
+        self.assertEqual(len(context), 2)
+        self.assertEqual(context[0],list1)
+        #self.assertEqual(response.context['todo_lists'], List.objects.all())
 class ListViewTest(TestCase):
 
     def test_passes_correct_list_to_template(self):
@@ -86,6 +94,8 @@ class ListViewTest(TestCase):
         Item.objects.create(text = 'Item 2', list = current_list)
         response = self.client.get('/lists/%d/' %(current_list.id, ))
         self.assertContains(response, 'input type = "checkbox"')
+
+class EditListTest(TestCase):
     def test_POST_one_item_marked_done(self):
         #create items
         current_list = List.objects.create()
@@ -141,6 +151,13 @@ class ListViewTest(TestCase):
         self.assertFalse(item1.is_done)
         self.assertTrue(item2.is_done)
 
+    def test_edit_list_name(self):
+        current_list = List.objects.create()
+        self.client.post('/lists/%d/' %(current_list.id,), data = {
+        'list_name': 'New List'
+        })
+
+        self.assertEqual(List.objects.first().name, 'New List')
 class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
