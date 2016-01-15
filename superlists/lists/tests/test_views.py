@@ -88,6 +88,13 @@ class ListViewTest(TestCase):
         self.assertEqual(Item.objects.count(),0)
         #self.assertRedirects(response, '/lists/%d/' % (correct_list.id,))
 
+    def test_new_list_has_name_of_first_item(self):
+        self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+        new_list = List.objects.first()
+        self.assertEqual(new_list.name, 'A new list item')
     def test_list_view_display_checkbox(self):
         current_list = List.objects.create()
         Item.objects.create(text = 'Item 1', list = current_list)
